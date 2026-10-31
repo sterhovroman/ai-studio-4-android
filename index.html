@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#090b14"><meta name="description" content="Бесплатная AI Studio для музыки и видео">
+<link rel="manifest" href="manifest.webmanifest"><link rel="stylesheet" href="styles.css">
+<title>AI Studio Ultimate 4.0</title>
+</head>
+<body>
+<div class="app-shell">
+  <header class="topbar">
+    <div class="brand"><div class="logo">✦</div><div><b>AI STUDIO</b><small>ULTIMATE CREATOR</small></div></div>
+    <div class="top-actions"><span class="status"><i></i> Локальная студия</span><button id="installBtn" class="ghost hidden">Установить</button></div>
+  </header>
+  <div class="layout">
+    <nav class="sidebar">
+      <button class="nav active" data-page="home">⌂ <span>Главная</span></button>
+      <button class="nav" data-page="music">♫ <span>Музыка</span></button>
+      <button class="nav" data-page="video">▣ <span>Видеостудия</span></button>
+      <button class="nav" data-page="photo">▧ <span>Фото</span></button>
+      <button class="nav" data-page="aihub">✧ <span>AI-модели</span></button>
+      <button class="nav" data-page="voice">◉ <span>Озвучка</span></button>
+      <button class="nav" data-page="library">▤ <span>Проекты</span></button>
+      <button class="nav" data-page="settings">⚙ <span>Настройки</span></button>
+      <div class="side-note">FREE • OPEN TOOLS<br><small>Без подписки и платных API</small></div>
+    </nav>
+    <main>
+      <section class="page active" id="page-home">
+        <div class="hero">
+          <div class="eyebrow">ТВОЯ ТВОРЧЕСКАЯ ЛАБОРАТОРИЯ</div>
+          <h1>Создавай без<br><span>ограничений.</span></h1>
+          <p>Музыка, видео, голос и монтаж — в одной студии.</p>
+          <div class="hero-actions"><button class="primary" data-go="music">Создать музыку <b>→</b></button><button class="secondary" data-go="video">Открыть видеостудию</button></div>
+        </div>
+        <div class="project-actions"><button class="secondary" id="exportWorkspace">↓ Экспорт проекта</button><button class="secondary" id="importWorkspace">↑ Импорт проекта</button><input type="file" id="workspaceFile" accept="application/json" hidden></div>
+        <h2>Рабочие пространства</h2>
+        <div class="tiles">
+          <article class="tile music-tile" data-go="music"><div class="tile-icon">♫</div><h3>Music AI</h3><p>Создание мелодий, ритмов и музыкальных набросков.</p><span>Открыть студию →</span></article>
+          <article class="tile video-tile" data-go="video"><div class="tile-icon">▣</div><h3>Video Creator</h3><p>Сборка роликов из фото и видео, монтаж и экспорт.</p><span>Открыть студию →</span></article>
+          <article class="tile voice-tile" data-go="voice"><div class="tile-icon">◉</div><h3>Voice Lab</h3><p>Озвучивание текста голосом устройства.</p><span>Открыть студию →</span></article>
+        </div>
+        <div class="notice"><b>Как работает AI:</b> локальные инструменты доступны сразу. Для генерации песен с вокалом, изображений и видео подключите бесплатные открытые модели на компьютере/сервере — инструкция находится в README.</div>
+      </section>
+
+      <section class="page" id="page-music">
+        <div class="page-head"><div><div class="eyebrow">MUSIC GENERATOR</div><h1>Музыкальная студия</h1><p>Создавай музыкальные идеи и экспортируй их в WAV.</p></div><span class="pill">♫ AUDIO LAB</span></div>
+        <div class="panel">
+          <label>Название композиции<input id="trackName" value="Моя первая композиция" maxlength="60"></label>
+          <label>Опиши звучание<textarea id="musicPrompt" rows="3" placeholder="Например: эпичная кинематографичная музыка, мощные барабаны, синтезаторы..."></textarea></label>
+          <div class="form-grid">
+            <label>Жанр<select id="genre"><option value="ambient">Ambient / Атмосфера</option><option value="electronic">Электроника</option><option value="cinematic">Кинематографическая</option><option value="rock">Рок</option><option value="lofi">Lo-Fi</option><option value="dance">Dance</option></select></label>
+            <label>Темп <select id="tempo"><option value="80">80 BPM</option><option value="100" selected>100 BPM</option><option value="120">120 BPM</option><option value="140">140 BPM</option></select></label>
+            <label>Длительность <select id="duration"><option value="15">15 секунд</option><option value="30" selected>30 секунд</option><option value="60">1 минута</option></select></label>
+            <label>Настроение<select id="mood"><option value="epic">Эпичное</option><option value="calm">Спокойное</option><option value="dark">Мрачное</option><option value="happy">Позитивное</option></select></label>
+          </div>
+          <div class="row-actions"><button id="makeMusic" class="primary">✦ Создать музыкальный набросок</button><button id="stopMusic" class="secondary">Остановить</button></div>
+          <div id="musicStatus" class="statusline">Готово к созданию. Генератор использует синтез звука прямо в браузере.</div>
+        </div>
+        <div class="panel player">
+          <div><div class="eyebrow">PLAYER</div><h3 id="nowPlaying">Нет композиции</h3><p id="trackMeta">Создай набросок, чтобы увидеть дорожку.</p></div>
+          <div class="wave" id="wave"></div>
+          <div class="row-actions"><button id="playMusic" class="secondary" disabled>▶ Воспроизвести</button><button id="downloadWav" class="primary" disabled>↓ Скачать WAV</button></div>
+        </div>
+        <div class="notice">Это встроенный процедурный музыкальный генератор: он создаёт оригинальные синтезированные музыкальные наброски, а не имитирует полноценную генерацию вокальных песен Suno. Подключение моделей ACE-Step описано в инструкции.</div>
+      </section>
+
+      <section class="page" id="page-video">
+        <div class="page-head"><div><div class="eyebrow">VIDEO CREATOR</div><h1>Видеостудия</h1><p>Добавляй материалы, собирай ролик и сохраняй результат.</p></div><span class="pill">▣ VIDEO LAB</span></div>
+        <div class="panel">
+          <div class="upload-zone" id="dropZone"><div class="upload-icon">＋</div><b>Добавить фото или видео</b><p>Нажми, чтобы выбрать файлы на телефоне</p><input id="mediaInput" type="file" accept="image/*,video/*" multiple hidden><button class="secondary" id="chooseMedia">Выбрать файлы</button></div>
+          <div class="media-list" id="mediaList"><span class="muted">Пока нет материалов</span></div>
+          <div class="timeline-panel"><div class="timeline-head"><b>Таймлайн проекта</b><small>Перетаскивай клипы, чтобы менять порядок</small></div><div id="timelineTracks" class="timeline-tracks"><span class="muted">Добавь медиафайлы для создания таймлайна</span></div></div>
+          <label>Текст идеи / сценарий<textarea id="videoPrompt" rows="2" placeholder="Опиши, каким должен быть ролик..."></textarea></label>
+          <label>Титр на видео (необязательно)<input id="videoCaption" placeholder="Текст для титра"></label>
+          <div class="form-grid"><label>Цвет титра<input id="videoCaptionColor" type="color" value="#ffffff"></label><label>Размер титра<input id="videoCaptionSize" type="range" min="18" max="90" value="42"></label></div>
+          <div class="form-grid"><label>Формат<select id="videoRatio"><option value="9:16">Вертикальный 9:16</option><option value="16:9">Широкий 16:9</option><option value="1:1">Квадрат 1:1</option></select></label><label>Переход<select id="videoTransition"><option value="cut">Без перехода</option><option value="fade">Затухание</option><option value="slide">Сдвиг (экспериментально)</option></select></label><label>Качество экспорта<select id="videoQuality"><option value="720">720p</option><option value="1080">1080p (если поддерживается)</option></select></label><label>Длительность показа фото<select id="photoDuration"><option value="3">3 секунды</option><option value="5" selected>5 секунд</option><option value="8">8 секунд</option></select></label></div>
+          <div class="row-actions"><button class="primary" id="exportVideo">Собрать и экспортировать видео</button><button class="secondary" id="clearMedia">Очистить</button></div>
+          <div id="videoStatus" class="statusline">Добавь фото или видео. Экспорт доступен в формате WebM в поддерживаемых браузерах.</div>
+        </div>
+        <div class="panel"><div class="eyebrow">PREVIEW</div><div class="preview-wrap"><canvas id="previewCanvas" width="720" height="1280"></canvas></div><p class="muted">Предпросмотр показывает выбранный материал. Для полноценного многодорожечного монтажа можно подключить внешний редактор или FFmpeg.</p></div>
+        <div class="notice">Экспорт видео выполняется в браузере через MediaRecorder. Поддержка кодеков и максимальное разрешение зависят от Android и браузера.</div>
+      </section>
+
+
+      <section class="page" id="page-photo">
+        <div class="page-head"><div><div class="eyebrow">PHOTO CREATOR PRO</div><h1>Фоторедактор</h1><p>Фильтры, цветокоррекция, кадрирование, текст и рисование.</p></div><span class="pill">▧ PHOTO LAB</span></div>
+        <div class="panel photo-workspace">
+          <div class="photo-toolbar">
+            <button class="secondary" id="photoChoose">＋ Открыть фото</button>
+            <input id="photoInput" type="file" accept="image/*" hidden>
+            <button class="secondary" id="photoRotate">↻ Повернуть</button>
+            <button class="secondary" id="photoFlip">⇋ Отразить</button>
+            <button class="secondary" id="photoUndo">↶ Отменить рисунок</button>
+            <button class="secondary" id="photoReset">Сбросить</button>
+            <button class="secondary" id="removeBackground">✧ Удалить фон (AI)</button>
+          </div>
+          <div class="photo-canvas-wrap"><canvas id="photoCanvas" width="1200" height="1200"></canvas></div>
+          <div class="photo-tools-grid">
+            <div class="tool-card">
+              <h3>Цвет и свет</h3>
+              <label>Яркость <output id="brightnessVal">100%</output><input id="brightness" type="range" min="0" max="200" value="100"></label>
+              <label>Контраст <output id="contrastVal">100%</output><input id="contrast" type="range" min="0" max="200" value="100"></label>
+              <label>Насыщенность <output id="saturateVal">100%</output><input id="saturate" type="range" min="0" max="250" value="100"></label>
+              <label>Теплота <output id="hueVal">0°</output><input id="hue" type="range" min="-180" max="180" value="0"></label>
+              <label>Размытие <output id="blurVal">0px</output><input id="blur" type="range" min="0" max="12" value="0"></label>
+            </div>
+            <div class="tool-card">
+              <h3>Фильтры</h3>
+              <div class="filter-grid">
+                <button class="filter-btn" data-filter="none">Оригинал</button><button class="filter-btn" data-filter="mono">Ч/Б</button>
+                <button class="filter-btn" data-filter="warm">Тёплый</button><button class="filter-btn" data-filter="vintage">Винтаж</button>
+                <button class="filter-btn" data-filter="cool">Холодный</button><button class="filter-btn" data-filter="dramatic">Драма</button>
+              </div>
+              <h3>Кадрирование</h3>
+              <label>Формат кадра<select id="photoCrop"><option value="original">Оригинал</option><option value="1:1">Квадрат 1:1</option><option value="4:5">Портрет 4:5</option><option value="9:16">История 9:16</option><option value="16:9">Широкий 16:9</option></select></label>
+            </div>
+            <div class="tool-card">
+              <h3>Текст, рисунок и слои</h3>
+              <label>Надпись<input id="photoText" placeholder="Текст на фотографии"></label>
+              <label>Цвет текста<input id="photoTextColor" type="color" value="#ffffff"></label>
+              <label>Размер текста<input id="photoTextSize" type="range" min="18" max="110" value="54"></label>
+              <label>Цвет кисти<input id="brushColor" type="color" value="#ff3b8d"></label>
+              <label>Размер кисти<input id="brushSize" type="range" min="2" max="40" value="8"></label>
+              <label class="check-label"><input id="drawMode" type="checkbox"> Режим рисования</label>
+              <label>Положение текста<select id="photoTextPosition"><option value="bottom">Снизу</option><option value="center">По центру</option><option value="top">Сверху</option></select></label>
+              <label>Прозрачность текста<input id="photoTextOpacity" type="range" min="10" max="100" value="100"></label>
+              <label class="check-label"><input id="photoTextShadow" type="checkbox" checked> Тень текста</label>
+            </div>
+          </div>
+          <div class="row-actions"><button class="primary" id="photoExport">↓ Сохранить фото PNG</button></div>
+          <div id="photoStatus" class="statusline">Открой фотографию, чтобы начать редактирование. Исходный файл не изменяется.</div>
+        </div>
+        <div class="notice">Редактор работает локально в браузере: фото не отправляются на сервер. Доступны базовые фильтры, кадрирование по центру, поворот, отражение, текст и кисть. Это не заменяет все функции профессиональных мобильных редакторов, но основные операции работают без подписки.</div>
+      </section>
+
+
+      <section class="page" id="page-aihub">
+        <div class="page-head"><div><div class="eyebrow">OPEN MODEL CONTROL CENTER</div><h1>Центр AI-моделей</h1><p>Подключай собственные открытые модели без платных API.</p></div><span class="pill">OPEN SOURCE</span></div>
+        <div class="notice"><b>Принцип работы:</b> приложение не отправляет данные в неизвестные сервисы. Ты сам запускаешь модели на своём компьютере или сервере и указываешь адрес. Список ниже — интеграционная панель; наличие модели не означает, что она уже установлена.</div>
+        <div class="model-grid">
+          <article class="model-card"><div class="model-icon">♫</div><h3>ACE-Step / MusicGen</h3><p>Генерация музыки и инструменталов. Для вокальных песен выбирай модель, поддерживающую вокал и нужный язык.</p><span class="model-state">Нужен локальный backend</span><a href="https://github.com/ace-step/ACE-Step" target="_blank" rel="noopener">Официальный проект ↗</a></article>
+          <article class="model-card"><div class="model-icon">▣</div><h3>ComfyUI</h3><p>Графы генерации изображений и видео, inpainting, апскейл и другие workflow.</p><span class="model-state">Нужен локальный backend</span><a href="https://github.com/comfyanonymous/ComfyUI" target="_blank" rel="noopener">Официальный проект ↗</a></article>
+          <article class="model-card"><div class="model-icon">◉</div><h3>Whisper</h3><p>Распознавание речи, расшифровка аудио и основа для субтитров.</p><span class="model-state">Нужен локальный backend</span><a href="https://github.com/openai/whisper" target="_blank" rel="noopener">Официальный проект ↗</a></article>
+          <article class="model-card"><div class="model-icon">A</div><h3>Piper / TTS</h3><p>Локальная озвучка текста голосовыми моделями, если выбранный язык поддерживается.</p><span class="model-state">Нужен локальный backend</span><a href="https://github.com/rhasspy/piper" target="_blank" rel="noopener">Официальный проект ↗</a></article>
+        </div>
+        <div class="panel">
+          <h3>Проверка подключённого сервера</h3>
+          <p class="muted">Сначала открой Настройки и укажи адрес backend. Нажми кнопку ниже, чтобы проверить /health.</p>
+          <button class="primary" id="hubCheck">Проверить AI-сервер</button><div id="hubStatus" class="statusline">Пока не проверялся.</div>
+        </div>
+      </section>
+
+      <section class="page" id="page-voice">
+        <div class="page-head"><div><div class="eyebrow">VOICE LAB</div><h1>Озвучка текста</h1><p>Используй доступные голоса Android / браузера.</p></div></div>
+        <div class="panel">
+          <label>Текст для озвучивания<textarea id="speechText" rows="6" placeholder="Введи текст, который нужно озвучить..."></textarea></label>
+          <div class="form-grid"><label>Голос<select id="voiceSelect"><option value="">Автоматический</option></select></label><label>Скорость <input id="speechRate" type="range" min=".6" max="1.5" step=".1" value="1"></label></div>
+          <div class="row-actions"><button class="primary" id="speakBtn">▶ Озвучить</button><button class="secondary" id="stopSpeak">Остановить</button></div>
+          <div id="voiceStatus" class="statusline">Доступность голосов зависит от Android и установленных языковых пакетов.</div>
+        </div>
+      </section>
+
+      <section class="page" id="page-library">
+        <div class="page-head"><div><div class="eyebrow">YOUR WORKSPACE</div><h1>Мои проекты</h1><p>Проекты сохраняются в памяти этого браузера.</p></div></div>
+        <div class="panel"><div id="projectList" class="project-list"><span class="muted">Пока нет сохранённых проектов.</span></div><button class="secondary" id="saveProject">＋ Сохранить текущий проект</button>
+          <div class="project-actions"><button class="secondary" id="exportWorkspace2">↓ Экспорт библиотеки JSON</button><button class="secondary" id="importWorkspace2">↑ Импорт библиотеки JSON</button></div></div>
+      </section>
+
+      <section class="page" id="page-settings">
+        <div class="page-head"><div><div class="eyebrow">PREFERENCES</div><h1>Настройки</h1><p>Подключение внешних бесплатных AI-моделей.</p></div></div>
+        <div class="panel">
+          <label>Адрес локального AI-сервера (необязательно)<input id="apiUrl" placeholder="http://192.168.1.10:8000"></label>
+          <p class="muted">Укажи адрес сервера, на котором запущен совместимый backend. Не указывай случайные публичные адреса.</p>
+          <button class="primary" id="saveSettings">Сохранить настройки</button><button class="secondary" id="testApi">Проверить соединение</button><div id="apiStatus" class="statusline">Сервер не настроен.</div>
+        </div>
+        <div class="panel"><h3>Расширяемая архитектура</h3><p>Версия 3.0 подготовлена к подключению новых инструментов через API-адаптеры: генераторы, апскейлеры, сегментация, TTS, ASR, видеопроцессинг и плагины.</p></div>
+        <div class="panel"><h3>О приложении</h3><p>AI Studio Ultimate — бесплатный стартовый проект. Локальная обработка не требует аккаунта. Никаких платных API или подписок приложение не использует.</p><p class="muted">Версия 1.0.0 • PWA • Open source starter</p></div>
+      </section>
+    </main>
+  </div>
+</div>
+<script src="app.js"></script>
+</body></html>
